@@ -1,0 +1,15 @@
+meta {
+  name: T5 List books NO auth header (expect 401)
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/books?page=1&pageSize=20
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}
