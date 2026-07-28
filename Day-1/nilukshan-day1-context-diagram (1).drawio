@@ -1,0 +1,143 @@
+<mxfile host="app.diagrams.net" agent="Claude" pages="2">
+  <diagram name="LearnLanka C4 Context Diagram" id="0">
+    <mxGraphModel dx="1363" dy="797" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <object label="" id="0">
+          <mxCell />
+        </object>
+        <mxCell id="1" parent="0" />
+        <mxCell id="qvCiH1Tysw9elkst58Fs-9" edge="1" parent="1" source="2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550.3333333333333" y="420.33333333333326" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Helvetica;fontSize=12;verticalAlign=middle;arcSize=8;" value="&lt;b style=&quot;font-size:14px&quot;&gt;LearnLanka Platform&lt;/b&gt;&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="120" width="240" x="310" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;arcSize=8;" value="&lt;b&gt;PayHere&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;2&quot;&gt;Payment Gateway&lt;br&gt;PCI-DSS compliant&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="700" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;arcSize=8;" value="&lt;b&gt;Daily.co / 100ms&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;2&quot;&gt;Video Call Platform&lt;br&gt;WebRTC-based sessions&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="700" y="413" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;arcSize=8;" value="&lt;b&gt;Sampath Vishwa&lt;/b&gt;&lt;br&gt;&lt;font size=&quot;2&quot;&gt;Bank Transfer Service&lt;br&gt;Weekly tutor payouts&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="700" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;arcSize=8;" value="&lt;b&gt;SMS Gateway&lt;/b&gt;&lt;font size=&quot;2&quot;&gt;&lt;br&gt;Notify.lk / Textit&lt;br&gt;OTP and notifications&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="160" x="700" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-30" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="&lt;b style=&quot;white-space: normal;&quot;&gt;Student&lt;/b&gt;&lt;font size=&quot;2&quot; style=&quot;white-space: normal;&quot;&gt;&lt;br&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="80" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-36" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="&lt;b style=&quot;white-space: normal;&quot;&gt;Ops Admin&lt;/b&gt;&lt;font size=&quot;2&quot; style=&quot;white-space: normal;&quot;&gt;&lt;br&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="40" x="80" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-44" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="&lt;b style=&quot;white-space: normal;&quot;&gt;Tutor&lt;/b&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="80" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-49" edge="1" parent="1" source="2" style="endArrow=classic;html=1;rounded=0;exitX=0.626;exitY=1.017;exitDx=0;exitDy=0;exitPerimeter=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="620" />
+            </Array>
+            <mxPoint x="460" y="510" as="sourcePoint" />
+            <mxPoint x="690" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-50" connectable="0" parent="yAONApqYauiefC1QxzLk-49" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;span style=&quot;color: rgb(11, 11, 11); font-family: &amp;quot;Anthropic Sans&amp;quot;, -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 12px; text-align: start;&quot;&gt;Sends weekly payouts batch&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.4163" y="4" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-51" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="7" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="540" y="453" />
+            </Array>
+            <mxPoint x="540" y="420" as="sourcePoint" />
+            <mxPoint x="570" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-52" connectable="0" parent="yAONApqYauiefC1QxzLk-51" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" value="&lt;span style=&quot;color: rgb(11, 11, 11); font-family: &amp;quot;Anthropic Sans&amp;quot;, -apple-system, BlinkMacSystemFont, &amp;quot;Segoe UI&amp;quot;, sans-serif; font-size: 12px; text-align: start;&quot;&gt;Video rooms&amp;nbsp;&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="14" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-55" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="6" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="270" />
+            </Array>
+            <mxPoint x="470" y="300" as="sourcePoint" />
+            <mxPoint x="570" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-56" connectable="0" parent="yAONApqYauiefC1QxzLk-55" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" value="Charges card and eZ cash" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-57" edge="1" parent="1" source="2" style="endArrow=classic;html=1;rounded=0;exitX=0.41;exitY=-0.018;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.009;entryY=0.399;entryDx=0;entryDy=0;entryPerimeter=0;" target="9" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="111.92" />
+            </Array>
+            <mxPoint x="470" y="330" as="sourcePoint" />
+            <mxPoint x="570" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-58" connectable="0" parent="yAONApqYauiefC1QxzLk-57" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" value="Sends bookings and OTP alerts" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-60" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="120" y="360" as="sourcePoint" />
+            <mxPoint x="300" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-61" connectable="0" parent="yAONApqYauiefC1QxzLk-60" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" value="Manages availabilty" vertex="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-62" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="328.72" y="120" />
+            </Array>
+            <mxPoint x="120" y="120" as="sourcePoint" />
+            <mxPoint x="328.72" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-63" connectable="0" parent="yAONApqYauiefC1QxzLk-62" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" value="Search tutors&amp;nbsp;&lt;div&gt;Books sessions&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-57" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-64" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=0.154;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" target="2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="346.96" y="600" />
+            </Array>
+            <mxPoint x="130" y="600" as="sourcePoint" />
+            <mxPoint x="130" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-65" connectable="0" parent="yAONApqYauiefC1QxzLk-64" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" value="Monitors and manages" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-75" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="yAONApqYauiefC1QxzLk-72" connectable="0" parent="yAONApqYauiefC1QxzLk-64" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry relative="1" x="0.414" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ITzNDisT0CN7bDAnbZiV" name="Page-2">
+    <mxGraphModel dx="1022" dy="598" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
