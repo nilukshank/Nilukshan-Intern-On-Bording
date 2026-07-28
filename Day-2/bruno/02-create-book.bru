@@ -1,0 +1,29 @@
+meta {
+  name: T2 Create book valid (expect 201)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/books
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer faketoken
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "title": "Sapiens",
+    "author": "Yuval Noah Harari",
+    "isbn": "9780099590088",
+    "condition": "good"
+  }
+}
+
+assert {
+  res.status: eq 201
+}

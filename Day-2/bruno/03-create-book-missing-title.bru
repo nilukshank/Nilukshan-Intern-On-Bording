@@ -1,0 +1,28 @@
+meta {
+  name: T3 Create book MISSING title (expect 422)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/books
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer faketoken
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "author": "Yuval Noah Harari",
+    "isbn": "9780099590088",
+    "condition": "good"
+  }
+}
+
+assert {
+  res.status: eq 422
+}
