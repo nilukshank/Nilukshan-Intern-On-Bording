@@ -1,0 +1,769 @@
+openapi: 3.0.3
+
+info:
+  title: BookSwap API
+  version: 1.0.0
+  description: |
+    REST API for BookSwap — a neighbourhood book-swapping platform.
+
+    This is the contract exposed by the **API service** container
+    (Node.js Express on Azure App Service) in `diagrams/container-diagram.png`.
+    It is the only container the mobile app talks to.
+
+    **Synchronous vs asynchronous.** Endpoints that return `200`/`201` have completed
+    all of their work when they respond. Endpoints that return **`202 Accepted`** have
+    persisted state to Azure SQL and published a job to Azure Service Bus; the email or
+    notification is produced later by the digest worker. See
+    `decisions/storage-decisions.md` (D4).
+
+    **Caching.** `GET /books` and `GET /books/{bookId}` are served cache-aside from
+    Azure Cache for Redis with a 60 s TTL and carry `Cache-Control: max-age=60`.
+    They may be up to 60 s stale (D2).
+
+    **Photos.** Uploads go through this API; reads are redirected to a short-lived
+    read-only SAS URL on Azure Blob Storage so photo bytes never traverse App Service (D3).
+  contact:
+    name: BookSwap platform team
+    email: platform@bookswap.example
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.bookswap.example/v1
+    description: Production
+  - url: https://api-staging.bookswap.example/v1
+    description: Staging
+  - url: http://localhost:8080/v1
+    description: Local development
+
+tags:
+  - name: Books
+    description: Catalogue of books offered by members (cache-aside reads)
+  - name: Photos
+    description: Book cover photos in Azure Blob Storage
+  - name: Borrow requests
+    description: Asks to borrow a copy — creates async notification jobs
+  - name: Loans
+    description: Active and historical loans (system of record in Azure SQL)
+  - name: Members
+    description: Member profiles and digest preferences
+  - name: Operations
+    description: Health and readiness probes
+
+security:
+  - bearerAuth: []
+
+paths:
+
+  # ---------------------------------------------------------------- Books ----
+  /books:
+    get:
+      tags: [Books]
+      operationId: listBooks
+      summary: List available books
+      description: >
+        Served cache-aside from Redis (60 s TTL), falling back to Azure SQL on a miss.
+        Synchronous.
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: q
+          in: query
+          description: Free-text match on title, author or ISBN.
+          schema: { type: string, maxLength: 120 }
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [available, on_loan, all]
+            default: available
+      responses:
+        '200':
+          description: A page of books.
+          headers:
+            Cache-Control:
+              schema: { type: string }
+              description: '`public, max-age=60` — matches the Redis TTL.'
+            X-Cache:
+              schema: { type: string, enum: [HIT, MISS] }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BookPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+    post:
+      tags: [Books]
+      operationId: createBook
+      summary: Offer a book to the neighbourhood
+      description: Writes to Azure SQL and invalidates `books:available:*` in Redis. Synchronous.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BookCreate' }
+      responses:
+        '201':
+          description: Book created.
+          headers:
+            Location:
+              schema: { type: string, format: uri }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Book' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /books/{bookId}:
+    parameters:
+      - $ref: '#/components/parameters/BookId'
+    get:
+      tags: [Books]
+      operationId: getBook
+      summary: Get one book
+      description: Cache-aside read (60 s TTL). Synchronous.
+      responses:
+        '200':
+          description: The book.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Book' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Books]
+      operationId: updateBook
+      summary: Update a book you own
+      description: Writes to Azure SQL and deletes the affected Redis keys. Synchronous.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BookUpdate' }
+      responses:
+        '200':
+          description: Updated book.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Book' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Books]
+      operationId: deleteBook
+      summary: Withdraw a book you own
+      responses:
+        '204': { description: Withdrawn. }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: The book is currently on loan and cannot be withdrawn.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  # --------------------------------------------------------------- Photos ----
+  /books/{bookId}/photo:
+    parameters:
+      - $ref: '#/components/parameters/BookId'
+    put:
+      tags: [Photos]
+      operationId: uploadBookPhoto
+      summary: Upload a cover photo
+      description: >
+        The API service validates size and MIME type, writes the blob to the
+        `book-photos` container in Azure Blob Storage, and stores only the blob path
+        in Azure SQL. Synchronous. Maximum 5 MB.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: JPEG, PNG or WebP, ≤ 5 MB.
+      responses:
+        '201':
+          description: Photo stored.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PhotoRef' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '413':
+          description: Photo larger than 5 MB.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+        '415':
+          description: Unsupported media type.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+    get:
+      tags: [Photos]
+      operationId: getBookPhoto
+      summary: Get a time-limited read URL for the cover photo
+      description: >
+        Returns a read-only user-delegation SAS URL valid for 15 minutes. The client
+        then fetches the bytes directly from Azure Blob Storage, so image traffic never
+        passes through App Service.
+      responses:
+        '200':
+          description: SAS URL issued.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PhotoRef' }
+        '302':
+          description: Redirect straight to the SAS URL (used by `?redirect=true`).
+          headers:
+            Location:
+              schema: { type: string, format: uri }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ------------------------------------------------------- Borrow requests ----
+  /borrow-requests:
+    get:
+      tags: [Borrow requests]
+      operationId: listBorrowRequests
+      summary: List borrow requests you sent or received
+      parameters:
+        - name: role
+          in: query
+          schema: { type: string, enum: [borrower, owner], default: borrower }
+        - name: state
+          in: query
+          schema: { type: string, enum: [pending, approved, declined, withdrawn, all], default: pending }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of borrow requests.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BorrowRequestPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Borrow requests]
+      operationId: createBorrowRequest
+      summary: Ask to borrow a book
+      description: |
+        **Asynchronous follow-up.** The API service writes the `BorrowRequest` row to
+        Azure SQL, publishes a `notification` job to Azure Service Bus, and returns
+        `202 Accepted` immediately. The digest worker sends the owner's email later via
+        Azure Communication Services. The response body is the persisted request; the
+        email is *not* part of this transaction.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BorrowRequestCreate' }
+      responses:
+        '202':
+          description: >
+            Request persisted; owner notification queued. `Location` points at the
+            created request.
+          headers:
+            Location:
+              schema: { type: string, format: uri }
+            X-Correlation-Id:
+              schema: { type: string, format: uuid }
+              description: Also carried on the Service Bus message for tracing.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BorrowRequest' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: The copy is already on loan, or you already have a pending request.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  /borrow-requests/{requestId}/approve:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+    post:
+      tags: [Borrow requests]
+      operationId: approveBorrowRequest
+      summary: Approve a request for a book you own
+      description: >
+        **Asynchronous follow-up.** Creates the `Loan` row in Azure SQL inside one
+        transaction, queues the borrower's confirmation email, returns `202`.
+      responses:
+        '202':
+          description: Loan opened; borrower notification queued.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Loan' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: Request is no longer pending, or the copy is already on loan.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  /borrow-requests/{requestId}/decline:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+    post:
+      tags: [Borrow requests]
+      operationId: declineBorrowRequest
+      summary: Decline a request for a book you own
+      description: '**Asynchronous follow-up.** Queues the borrower notification, returns `202`.'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string, maxLength: 280 }
+      responses:
+        '202':
+          description: Declined; borrower notification queued.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/BorrowRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ---------------------------------------------------------------- Loans ----
+  /loans:
+    get:
+      tags: [Loans]
+      operationId: listLoans
+      summary: List your loans
+      description: Always read straight from Azure SQL — never cached (D2).
+      parameters:
+        - name: role
+          in: query
+          schema: { type: string, enum: [borrower, lender], default: borrower }
+        - name: state
+          in: query
+          schema: { type: string, enum: [open, returned, overdue, all], default: open }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of loans.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoanPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /loans/{loanId}/return:
+    parameters:
+      - name: loanId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Loans]
+      operationId: returnLoan
+      summary: Mark a loan as returned
+      description: >
+        **Asynchronous follow-up.** Closes the loan in Azure SQL, invalidates the book's
+        Redis keys, queues a thank-you notification, returns `202`.
+      responses:
+        '202':
+          description: Loan closed; notification queued.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Loan' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: Loan is already closed.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problem' }
+
+  # -------------------------------------------------------------- Members ----
+  /members/me:
+    get:
+      tags: [Members]
+      operationId: getMyProfile
+      summary: Get your own profile
+      description: >
+        Identity comes from the validated JWT issued by Microsoft Entra External ID;
+        the profile row is joined on the `sub` claim. Cached 300 s.
+      responses:
+        '200':
+          description: Your profile.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Member' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    patch:
+      tags: [Members]
+      operationId: updateMyProfile
+      summary: Update your profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MemberUpdate' }
+      responses:
+        '200':
+          description: Updated profile.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Member' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+
+  /members/me/digest-preferences:
+    put:
+      tags: [Members]
+      operationId: setDigestPreferences
+      summary: Choose how often the weekly digest arrives
+      description: >
+        Controls the email the digest worker sends through Azure Communication Services.
+        Synchronous — only the preference is written here.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DigestPreferences' }
+      responses:
+        '200':
+          description: Preferences saved.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DigestPreferences' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /members/me/digest:send-now:
+    post:
+      tags: [Members]
+      operationId: sendDigestNow
+      summary: Queue your digest immediately
+      description: |
+        **Purely asynchronous.** Publishes a `digest` job to Azure Service Bus and
+        returns `202` with no body. Nothing is sent inside this request — the digest
+        worker consumes the message, reads member and book detail from Azure SQL,
+        and sends the mail via Azure Communication Services.
+      responses:
+        '202':
+          description: Digest job queued.
+          headers:
+            X-Correlation-Id:
+              schema: { type: string, format: uuid }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  # ----------------------------------------------------------- Operations ----
+  /healthz:
+    get:
+      tags: [Operations]
+      operationId: health
+      summary: Liveness probe
+      security: []
+      responses:
+        '200':
+          description: The API service process is alive.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+  /readyz:
+    get:
+      tags: [Operations]
+      operationId: ready
+      summary: Readiness probe
+      description: Checks Azure SQL, Redis and Service Bus dependencies.
+      security: []
+      responses:
+        '200':
+          description: All dependencies reachable.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Readiness' }
+        '503':
+          description: One or more dependencies unavailable.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Readiness' }
+
+# ============================================================== components ===
+components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >
+        JWT issued by Microsoft Entra External ID (OIDC authorisation-code + PKCE).
+        The API service validates the signature against the tenant JWKS endpoint and
+        checks `iss`, `aud`, `exp` and the `bookswap.member` scope.
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    BookId:
+      name: bookId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    RequestId:
+      name: requestId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: >
+        Client-generated UUID. Reused as the Service Bus `messageId`, so a retried
+        request cannot produce a duplicate notification within the 10-minute
+        duplicate-detection window.
+      schema: { type: string, format: uuid }
+
+  responses:
+    BadRequest:
+      description: Malformed request.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Unauthorized:
+      description: Missing, expired or invalid JWT.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    Forbidden:
+      description: Authenticated, but not your resource.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    NotFound:
+      description: No such resource.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    ValidationFailed:
+      description: Body understood but semantically invalid.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+    TooManyRequests:
+      description: Rate limit exceeded.
+      headers:
+        Retry-After:
+          schema: { type: integer }
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+
+  schemas:
+
+    Problem:
+      type: object
+      description: RFC 7807 problem detail.
+      properties:
+        type: { type: string, format: uri, example: 'https://api.bookswap.example/problems/copy-on-loan' }
+        title: { type: string, example: Copy already on loan }
+        status: { type: integer, example: 409 }
+        detail: { type: string }
+        instance: { type: string, format: uri }
+        correlationId: { type: string, format: uuid }
+      required: [type, title, status]
+
+    Pagination:
+      type: object
+      properties:
+        page: { type: integer, example: 1 }
+        pageSize: { type: integer, example: 20 }
+        totalItems: { type: integer, example: 137 }
+        totalPages: { type: integer, example: 7 }
+      required: [page, pageSize, totalItems, totalPages]
+
+    Book:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string, example: The Left Hand of Darkness }
+        author: { type: string, example: Ursula K. Le Guin }
+        isbn13: { type: string, pattern: '^[0-9]{13}$', example: '9780441478125' }
+        condition: { type: string, enum: [new, good, fair, worn] }
+        status: { type: string, enum: [available, on_loan] }
+        ownerId: { type: string, format: uuid }
+        photoUrl:
+          type: string
+          format: uri
+          nullable: true
+          description: Short-lived read-only SAS URL on Azure Blob Storage.
+        createdAt: { type: string, format: date-time }
+      required: [id, title, author, condition, status, ownerId, createdAt]
+
+    BookCreate:
+      type: object
+      properties:
+        title: { type: string, minLength: 1, maxLength: 300 }
+        author: { type: string, minLength: 1, maxLength: 200 }
+        isbn13: { type: string, pattern: '^[0-9]{13}$' }
+        condition: { type: string, enum: [new, good, fair, worn], default: good }
+      required: [title, author]
+
+    BookUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        title: { type: string, maxLength: 300 }
+        author: { type: string, maxLength: 200 }
+        condition: { type: string, enum: [new, good, fair, worn] }
+
+    BookPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Book' }
+        pagination: { $ref: '#/components/schemas/Pagination' }
+      required: [items, pagination]
+
+    PhotoRef:
+      type: object
+      properties:
+        bookId: { type: string, format: uuid }
+        blobPath: { type: string, example: 'book-photos/9f1c/cover.jpg' }
+        readUrl:
+          type: string
+          format: uri
+          description: Read-only user-delegation SAS URL.
+        expiresAt: { type: string, format: date-time }
+        sizeBytes: { type: integer, maximum: 5242880 }
+        contentType: { type: string, enum: [image/jpeg, image/png, image/webp] }
+      required: [bookId, blobPath, readUrl, expiresAt]
+
+    BorrowRequest:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        bookId: { type: string, format: uuid }
+        borrowerId: { type: string, format: uuid }
+        ownerId: { type: string, format: uuid }
+        state: { type: string, enum: [pending, approved, declined, withdrawn] }
+        message: { type: string, maxLength: 280, nullable: true }
+        notificationState:
+          type: string
+          enum: [queued, sent, failed]
+          description: Set to `queued` by the API service; advanced by the digest worker.
+        createdAt: { type: string, format: date-time }
+      required: [id, bookId, borrowerId, ownerId, state, createdAt]
+
+    BorrowRequestCreate:
+      type: object
+      properties:
+        bookId: { type: string, format: uuid }
+        message: { type: string, maxLength: 280 }
+        pickupWindow:
+          type: string
+          enum: [today, this_week, whenever]
+          default: this_week
+      required: [bookId]
+
+    BorrowRequestPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/BorrowRequest' }
+        pagination: { $ref: '#/components/schemas/Pagination' }
+      required: [items, pagination]
+
+    Loan:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        bookId: { type: string, format: uuid }
+        borrowerId: { type: string, format: uuid }
+        lenderId: { type: string, format: uuid }
+        borrowedAt: { type: string, format: date-time }
+        dueAt: { type: string, format: date-time }
+        returnedAt: { type: string, format: date-time, nullable: true }
+        state: { type: string, enum: [open, returned, overdue] }
+      required: [id, bookId, borrowerId, lenderId, borrowedAt, dueAt, state]
+
+    LoanPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/Loan' }
+        pagination: { $ref: '#/components/schemas/Pagination' }
+      required: [items, pagination]
+
+    Member:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        externalObjectId:
+          type: string
+          description: Entra External ID subject claim. Join key; never a password.
+        displayName: { type: string, example: Nilu K. }
+        apartment: { type: string, example: 'Block B · 12F' }
+        email: { type: string, format: email }
+        booksOffered: { type: integer }
+        booksBorrowed: { type: integer }
+        joinedAt: { type: string, format: date-time }
+      required: [id, externalObjectId, displayName, email, joinedAt]
+
+    MemberUpdate:
+      type: object
+      minProperties: 1
+      properties:
+        displayName: { type: string, maxLength: 80 }
+        apartment: { type: string, maxLength: 40 }
+
+    DigestPreferences:
+      type: object
+      properties:
+        frequency: { type: string, enum: [off, weekly, daily], default: weekly }
+        dayOfWeek:
+          type: integer
+          minimum: 0
+          maximum: 6
+          description: '0 = Sunday. Ignored when frequency is `daily` or `off`.'
+        notifyOnBorrowRequest: { type: boolean, default: true }
+      required: [frequency]
+
+    Readiness:
+      type: object
+      properties:
+        status: { type: string, enum: [ready, degraded] }
+        dependencies:
+          type: object
+          properties:
+            azureSql: { type: string, enum: [up, down] }
+            redis:
+              type: string
+              enum: [up, down]
+              description: '`down` degrades latency only — reads fall back to Azure SQL.'
+            serviceBus: { type: string, enum: [up, down] }
+      required: [status, dependencies]
