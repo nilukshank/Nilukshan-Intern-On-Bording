@@ -1,0 +1,75 @@
+# BookSwap — Alert definitions (Azure Monitor style)
+# Each alert protects a specific SLO or invariant and links to a runbook section.
+
+alerts:
+  - name: listings-endpoint-down
+    protects: S4            # detection < 3 min
+    signal: synthetic_probe
+    target: "POST /books"
+    condition: "3 consecutive probe failures"
+    severity: Sev1
+    notify: [pager]
+    runbook: reliability/runbook.md#failure-1-azure-sql-primary-unavailable
+
+  - name: sql-dependency-failing
+    protects: S2
+    signal: dependency_failure_rate
+    target: "type == 'SQL'"
+    condition: "> 5% over 2m"
+    severity: Sev1
+    notify: [pager]
+    runbook: reliability/runbook.md#failure-1-azure-sql-primary-unavailable
+
+  - name: search-slo-burn
+    protects: S1
+    signal: request_slow_or_error_rate
+    target: "GET /books"
+    condition: "> 1% not(2xx & <800ms) over 5m"
+    severity: Sev2
+    notify: [pager, teams]
+    runbook: reliability/runbook.md#failure-2-azure-cache-for-redis-is-down
+
+  - name: listing-creation-failing
+    protects: S2
+    signal: request_success_rate
+    target: "POST /books"
+    condition: "< 99.9% over 10m"
+    severity: Sev2
+    notify: [pager, teams]
+    runbook: reliability/runbook.md#failure-1-azure-sql-primary-unavailable
+
+  - name: redis-degraded
+    protects: S1
+    signal: dependency_failure_rate
+    target: "type == 'Redis'"
+    condition: "> 20% over 5m"
+    severity: Sev2
+    notify: [teams]
+    runbook: reliability/runbook.md#failure-2-azure-cache-for-redis-is-down
+
+  - name: queue-backing-up
+    protects: spike-handling
+    signal: servicebus_active_messages
+    target: "bookswap-jobs"
+    condition: "> 10000 for 10m"
+    severity: Sev3
+    notify: [teams]
+    runbook: reliability/runbook.md#failure-3-sunday-tabloid-spike
+
+  - name: auth-anomaly
+    protects: S3
+    signal: custom_event_rate
+    target: "auth.failed"
+    condition: "> 100/min from one IP"
+    severity: Sev3
+    notify: [teams-security]
+    runbook: security/review.md
+
+  - name: audit-gap
+    protects: S6
+    signal: log_coverage
+    target: "audit events"
+    condition: "< 99.9% over 1h"
+    severity: Sev3
+    notify: [teams]
+    runbook: slo-map.md

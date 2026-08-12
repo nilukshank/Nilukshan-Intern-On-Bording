@@ -1,0 +1,9 @@
+id,category,finding,severity,mitigation,owner
+T1,Authz (BOLA),"/{id} endpoints (PATCH /books/{id}, approve/decline, loan reads) do not enforce object ownership in the contract",High,"Scope every query to caller sub; return 404 for non-owned resources; add per-endpoint authz test",Backend lead
+T2,Rate limit,"Write endpoints (POST /books, POST /borrow-requests, :send-now) declare 429 but no rate-limit rule is configured",Medium,"Front Door rate limiting: 100/min per IP on writes, tighter on :send-now",Platform eng
+T3,PII,"Member email/apartment could be returned for other members, or leak into App Insights logs/traces",Medium,"Return PII only for /members/me; redact Authorization + PII before logging; log member ID not email",Backend lead
+T4,Injection,"Free-text q on GET /books flows into a query; confirm parameterised, not concatenated",Medium,"Parameterise/bind q; CI lint against raw SQL string concat",Backend dev
+T5,Authn,"Token lifetime and JWKS signature/iss/aud/exp validation asserted in design but not proven by a test",Low,"Add CI test rejecting none-alg and expired tokens with 401",Backend dev
+T6,Transport,"HTTPS-only, min TLS 1.2, and HSTS not confirmed at Front Door",Low,"Enable HTTPS-only redirect, min TLS 1.2, add HSTS header",Platform eng
+T7,Secrets,"Verify no plaintext connection strings in App Service settings",Low,"Use Key Vault references; assert no secrets in app settings",Platform eng
+T8,Headers (ZAP),"Baseline scan flags missing X-Content-Type-Options / CSP / HSTS on responses",Low,"Add security headers at Azure Front Door",Platform eng
