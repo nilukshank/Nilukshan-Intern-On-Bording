@@ -1,0 +1,182 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="Container_(C4_L2)" name="Container (C4 L2)">
+    <mxGraphModel dx="4887" dy="2497" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bnd" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#444444;verticalAlign=top;fontSize=13;fontStyle=1;" value="GreenChit - Reimbursement Claims System" vertex="1">
+          <mxGeometry height="911" width="1702" x="256" y="192" as="geometry" />
+        </mxCell>
+        <mxCell id="claimant" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Claimant&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;Submits reimbursement claims" vertex="1">
+          <mxGeometry height="100" width="220" x="8" y="-308" as="geometry" />
+        </mxCell>
+        <mxCell id="manager" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Line Manager&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;Approves or rejects team claims" vertex="1">
+          <mxGeometry height="100" width="220" x="346" y="-559" as="geometry" />
+        </mxCell>
+        <mxCell id="finance" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Finance Officer&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;Runs the payroll export" vertex="1">
+          <mxGeometry height="100" width="220" x="1485" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="auditor" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Auditor&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;Read-only, 7-year window" vertex="1">
+          <mxGeometry height="100" width="220" x="1543" y="-326" as="geometry" />
+        </mxCell>
+        <mxCell id="spa" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Claims SPA&lt;/b&gt;&lt;br&gt;&lt;i&gt;[React + TypeScript]&lt;/i&gt;&lt;br&gt;Claim capture, status, approval UI" vertex="1">
+          <mxGeometry height="100" width="220" x="620" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Claims API&lt;/b&gt;&lt;br&gt;&lt;i&gt;[ASP.NET Core 8, App Service P1v3]&lt;/i&gt;&lt;br&gt;Workflow, authorization, audit, outbox" vertex="1">
+          <mxGeometry height="100" width="220" x="620" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="bus" parent="1" style="shape=process;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Event Broker&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Service Bus Standard]&lt;/i&gt;&lt;br&gt;Topic: claim-events" vertex="1">
+          <mxGeometry height="100" width="220" x="867" y="644" as="geometry" />
+        </mxCell>
+        <mxCell id="notifier" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Notification Worker&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Azure Functions]&lt;/i&gt;&lt;br&gt;Adaptive Cards, email fallback" vertex="1">
+          <mxGeometry height="100" width="220" x="298" y="644" as="geometry" />
+        </mxCell>
+        <mxCell id="exporter" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Export Worker&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Azure Functions, scheduled]&lt;/i&gt;&lt;br&gt;CSV assembly, SharePoint write" vertex="1">
+          <mxGeometry height="100" width="220" x="1426" y="808" as="geometry" />
+        </mxCell>
+        <mxCell id="db" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#d80073;strokeColor=#A50040;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Claims Database&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Azure SQL S1, ledger tables]&lt;/i&gt;&lt;br&gt;Claims, transitions, audit ledger" vertex="1">
+          <mxGeometry height="115" width="220" x="1196" y="524" as="geometry" />
+        </mxCell>
+        <mxCell id="blob" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#d80073;strokeColor=#A50040;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Receipt Store&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Blob Storage]&lt;/i&gt;&lt;br&gt;Receipt images, scan verdicts" vertex="1">
+          <mxGeometry height="115" width="220" x="1504" y="426" as="geometry" />
+        </mxCell>
+        <mxCell id="entra" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8B8B8B;strokeColor=#5C5C5C;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Microsoft Entra ID&lt;/b&gt;&lt;br&gt;&lt;i&gt;[External]&lt;/i&gt;&lt;br&gt;SSO, app roles, manager graph" vertex="1">
+          <mxGeometry height="100" width="220" x="2785" y="229" as="geometry" />
+        </mxCell>
+        <mxCell id="teams" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8B8B8B;strokeColor=#5C5C5C;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Microsoft Teams&lt;/b&gt;&lt;br&gt;&lt;i&gt;[External]&lt;/i&gt;&lt;br&gt;Adaptive Card delivery" vertex="1">
+          <mxGeometry height="100" width="220" x="-145" y="1129" as="geometry" />
+        </mxCell>
+        <mxCell id="exchange" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8B8B8B;strokeColor=#5C5C5C;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Exchange Online&lt;/b&gt;&lt;br&gt;&lt;i&gt;[External]&lt;/i&gt;&lt;br&gt;Email fallback channel" vertex="1">
+          <mxGeometry height="100" width="220" x="293" y="1257" as="geometry" />
+        </mxCell>
+        <mxCell id="sharepoint" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8B8B8B;strokeColor=#5C5C5C;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;SharePoint Online&lt;/b&gt;&lt;br&gt;&lt;i&gt;[External]&lt;/i&gt;&lt;br&gt;Watched payroll drop folder" vertex="1">
+          <mxGeometry height="100" width="220" x="1459" y="1268" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" value="Submits claims and tracks status&lt;br&gt;&lt;i&gt;[HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="121.57" y="43.57" />
+              <mxPoint x="694.4300000000001" y="43.57" />
+            </Array>
+            <mxPoint x="121.57" y="-194" as="sourcePoint" />
+            <mxPoint x="694.4271428571432" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" value="Approves, rejects, requests information&lt;br&gt;&lt;i&gt;[HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="-509" />
+            </Array>
+            <mxPoint x="496" y="-508.9999999999998" as="sourcePoint" />
+            <mxPoint x="660" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="finance" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="spa" value="Triggers and reviews payroll export&lt;br&gt;&lt;i&gt;[HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="730" y="86" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" value="Reads immutable claim history&lt;br&gt;&lt;i&gt;[HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="-287.86" />
+            </Array>
+            <mxPoint x="1583.000000000001" y="-287.85714285714266" as="sourcePoint" />
+            <mxPoint x="770" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="spa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="entra" value="Authenticates user via auth-code PKCE&lt;br&gt;&lt;i&gt;[OIDC/HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="spa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="api" value="Submits claim details&lt;br&gt;&lt;i&gt;[HTTPS/JSON]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" value="Uploads receipt files in chunks with signed URL&lt;br&gt;&lt;i&gt;[HTTPS Block Blob]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="840" y="317.1266666666666" as="sourcePoint" />
+            <mxPoint x="1610.07" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="bnd" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" value="Validates token signature and app roles&lt;br&gt;&lt;i&gt;[OIDC/HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" x="0.0189" y="-32" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="2935.77" y="970.77" />
+            </Array>
+            <mxPoint x="1817" y="715.5333333333332" as="sourcePoint" />
+            <mxPoint x="2935.73" y="329" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.829;exitY=0.005;exitDx=0;exitDy=0;exitPerimeter=0;" target="entra" value="Resolves line manager for claimant&lt;br&gt;&lt;i&gt;[MS Graph/HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="840" y="496.06666666666706" as="sourcePoint" />
+            <mxPoint x="2895" y="345" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="db" value="Saves claim and audit row in one transaction&lt;br&gt;&lt;i&gt;[TDS 1433]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1018.07" y="447.53" />
+              <mxPoint x="1018.07" y="581.53" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;entryX=0;entryY=0;entryDx=0;entryDy=36.25;entryPerimeter=0;" target="blob" value="Issues short-lived signed upload URLs&lt;br&gt;&lt;i&gt;[HTTPS REST]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="833" y="460.99666666666707" as="sourcePoint" />
+            <mxPoint x="1489.4" y="458.47" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" target="bus" value="Publishes claim events after responding&lt;br&gt;&lt;i&gt;[AMQP 5671]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="895.27" y="505" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="bus" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="notifier" value="Delivers claim.submitted&lt;br&gt;&lt;i&gt;[AMQP 5671]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="bus" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="exporter" value="Delivers claim.approved&lt;br&gt;&lt;i&gt;[AMQP 5671]&lt;/i&gt;">
+          <mxGeometry relative="1" x="0.0956" y="20" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1462.4" y="774" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="notifier" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="teams" value="Posts approval Adaptive Card&lt;br&gt;&lt;i&gt;[HTTPS webhook]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="notifier" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="exchange" value="Sends email after two failed card attempts&lt;br&gt;&lt;i&gt;[MS Graph/HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="exporter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="api" value="Reads approved claims for the period&lt;br&gt;&lt;i&gt;[HTTPS/JSON]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="698.71" y="858" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="exporter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="sharepoint" value="Writes .tmp then renames to .csv&lt;br&gt;&lt;i&gt;[MS Graph/HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1570.4" y="1171" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e19" edge="1" parent="1" source="teams" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" value="Alerts manager on mobile or desktop&lt;br&gt;&lt;i&gt;[Teams client]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="543.29" y="1179" />
+            </Array>
+            <mxPoint x="98" y="1179" as="sourcePoint" />
+            <mxPoint x="543.4285714285716" y="-458.9999999999998" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

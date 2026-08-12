@@ -1,0 +1,106 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="Component_(C4_L3)_-_Claims_API" name="Component (C4 L3) - Claims API">
+    <mxGraphModel dx="1202" dy="664" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2100" pageHeight="1250" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="apibnd" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#444444;verticalAlign=top;fontSize=13;fontStyle=1;" value="Claims API - ASP.NET Core 8 on App Service P1v3" vertex="1">
+          <mxGeometry height="490" width="1620" x="200" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="spa2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Claims SPA&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Container]&lt;/i&gt;&lt;br&gt;Claim capture and approval UI" vertex="1">
+          <mxGeometry height="100" width="220" x="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ex2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Export Worker&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Container]&lt;/i&gt;&lt;br&gt;Payroll CSV assembly" vertex="1">
+          <mxGeometry height="100" width="220" x="1000" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="facade" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontSize=11;fontColor=#ffffff;" value="&lt;b&gt;API Facade&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: ASP.NET Core controllers]&lt;/i&gt;&lt;br&gt;Routing, request validation" vertex="1">
+          <mxGeometry height="100" width="220" x="700" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="authz" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Authorization Policy Engine&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: policy handlers]&lt;/i&gt;&lt;br&gt;Single entry point for access decisions" vertex="1">
+          <mxGeometry height="100" width="220" x="1320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="workflow" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Claim Workflow Engine&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: C# domain service]&lt;/i&gt;&lt;br&gt;State machine, transition guards" vertex="1">
+          <mxGeometry height="100" width="220" x="700" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="assembler" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Export Assembler&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: C# service]&lt;/i&gt;&lt;br&gt;Projects approved claims to CSV rows" vertex="1">
+          <mxGeometry height="100" width="220" x="250" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="receipts" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Receipt Coordinator&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: C# + Storage SDK]&lt;/i&gt;&lt;br&gt;Issues signed upload URLs" vertex="1">
+          <mxGeometry height="100" width="220" x="470" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="ledger" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Audit Ledger Writer&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: C# + EF Core]&lt;/i&gt;&lt;br&gt;Appends who, when and why" vertex="1">
+          <mxGeometry height="100" width="220" x="950" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="outbox" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Outbox Publisher&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: C# background service]&lt;/i&gt;&lt;br&gt;Publishes events after the response" vertex="1">
+          <mxGeometry height="100" width="220" x="1180" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="directory" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#76608a;strokeColor=#432D57;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Directory Adapter&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Component: MS Graph SDK]&lt;/i&gt;&lt;br&gt;Reads the line manager relationship" vertex="1">
+          <mxGeometry height="100" width="220" x="1560" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="db2" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#e51400;strokeColor=#B20000;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Claims Database&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Container: Azure SQL S1]&lt;/i&gt;&lt;br&gt;Claims, ledger, outbox" vertex="1">
+          <mxGeometry height="115" width="220" x="700" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="blob2" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;whiteSpace=wrap;html=1;fillColor=#e51400;strokeColor=#B20000;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Receipt Store&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Container: Blob Storage]&lt;/i&gt;&lt;br&gt;Receipt images" vertex="1">
+          <mxGeometry height="115" width="220" x="430" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="bus2" parent="1" style="shape=process;whiteSpace=wrap;html=1;fillColor=#1168BD;strokeColor=#0B4884;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Event Broker&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Container: Service Bus]&lt;/i&gt;&lt;br&gt;Topic: claim-events" vertex="1">
+          <mxGeometry height="100" width="220" x="1000" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="entra2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#8B8B8B;strokeColor=#5C5C5C;fontColor=#FFFFFF;fontSize=11;" value="&lt;b&gt;Microsoft Entra ID&lt;/b&gt;&lt;br&gt;&lt;i&gt;[External]&lt;/i&gt;&lt;br&gt;SSO, app roles, manager graph" vertex="1">
+          <mxGeometry height="100" width="220" x="1500" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="spa2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="facade" value="Submits claim details&lt;br&gt;&lt;i&gt;[HTTPS/JSON]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="ex2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="facade" value="Requests approved claims for the period&lt;br&gt;&lt;i&gt;[HTTPS/JSON]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="facade" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="authz" value="Asks for an access decision on every request&lt;br&gt;&lt;i&gt;[in-process]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="facade" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="workflow" value="Invokes state transitions&lt;br&gt;&lt;i&gt;[in-process]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="facade" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="receipts" value="Requests upload URLs&lt;br&gt;&lt;i&gt;[in-process]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="facade" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="assembler" value="Requests the export projection&lt;br&gt;&lt;i&gt;[in-process]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="authz" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="entra2" value="Validates token signature and app roles&lt;br&gt;&lt;i&gt;[OIDC/HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="authz" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="directory" value="Asks whether this user manages the claimant&lt;br&gt;&lt;i&gt;[in-process]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="directory" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="entra2" value="Reads the manager relationship live&lt;br&gt;&lt;i&gt;[MS Graph/HTTPS]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="workflow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="db2" value="Saves claim rows&lt;br&gt;&lt;i&gt;[TDS 1433]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="workflow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="ledger" value="Appends the audit row in the same transaction&lt;br&gt;&lt;i&gt;[in-process]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="workflow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="outbox" value="Queues the event in the same transaction&lt;br&gt;&lt;i&gt;[in-process]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="ledger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="db2" value="Writes append-only rows to ledger tables&lt;br&gt;&lt;i&gt;[TDS 1433]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="outbox" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="db2" value="Reads undispatched events&lt;br&gt;&lt;i&gt;[TDS 1433]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="outbox" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="bus2" value="Publishes claim.submitted and claim.approved&lt;br&gt;&lt;i&gt;[AMQP 5671]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="receipts" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="blob2" value="Issues short-lived signed upload URLs&lt;br&gt;&lt;i&gt;[HTTPS REST]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="assembler" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" target="db2" value="Reads approved claims for the period&lt;br&gt;&lt;i&gt;[TDS 1433]&lt;/i&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
