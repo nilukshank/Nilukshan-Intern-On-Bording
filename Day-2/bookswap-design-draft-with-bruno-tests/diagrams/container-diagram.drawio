@@ -1,0 +1,87 @@
+<mxfile host="app.diagrams.net" pages="2">
+  <diagram id="bookswap-c4" name="Container diagram">
+    <mxGraphModel dx="1593" dy="797" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="boundary" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#777777;dashed=1;verticalAlign=bottom;align=left;spacing=8;fontStyle=2;fontColor=#666666;" value="BookSwap  [Software System]" vertex="1">
+          <mxGeometry height="608" width="912" x="16" y="176" as="geometry" />
+        </mxCell>
+        <mxCell id="member" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;fontColor=#ffffff;" value="&lt;b&gt;Member&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Resident of the apartment block who lists and borrows books&lt;/font&gt;" vertex="1">
+          <mxGeometry height="104" width="240" x="120" y="44" as="geometry" />
+        </mxCell>
+        <mxCell id="entra" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#6B6B6B;fontColor=#ffffff;" value="&lt;b&gt;Microsoft Entra External ID&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[External System]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Signs members in and issues JWTs&lt;/font&gt;" vertex="1">
+          <mxGeometry height="112" width="320" x="1230" y="36" as="geometry" />
+        </mxCell>
+        <mxCell id="mobile" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6295;fontColor=#ffffff;" value="&lt;b&gt;Mobile App&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Container: React Native]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Member-facing UI: catalogue, requests, loans, photo upload&lt;/font&gt;" vertex="1">
+          <mxGeometry height="128" width="272" x="104" y="208" as="geometry" />
+        </mxCell>
+        <mxCell id="blob" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#438DD5;strokeColor=#2E6295;fontColor=#ffffff;" value="&lt;b&gt;Object Store&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Container: Azure Blob Storage]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Book photos (JPEG/PNG ≤ 5 MB) — never in the database&lt;/font&gt;" vertex="1">
+          <mxGeometry height="128" width="256" x="580" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6295;fontColor=#ffffff;" value="&lt;b&gt;API Service&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Container: Node.js + Express, Azure App Service]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Stateless REST API: auth, validation, business rules, SAS issuing&lt;/font&gt;" vertex="1">
+          <mxGeometry height="136" width="288" x="96" y="412" as="geometry" />
+        </mxCell>
+        <mxCell id="sb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6295;fontColor=#ffffff;" value="&lt;b&gt;Queue&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Container: Azure Service Bus]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;borrow-events + digest-jobs queues; retry + dead-letter&lt;/font&gt;" vertex="1">
+          <mxGeometry height="128" width="272" x="632" y="416" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#438DD5;strokeColor=#2E6295;fontColor=#ffffff;" value="&lt;b&gt;Cache&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Container: Azure Cache for Redis]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Cache-aside copies of hot reads: catalogue p1, recent-10&lt;/font&gt;" vertex="1">
+          <mxGeometry height="128" width="240" x="30" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="sql" parent="1" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=14;fillColor=#438DD5;strokeColor=#2E6295;fontColor=#ffffff;" value="&lt;b&gt;Database&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Container: Azure SQL]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;System of record: members, books, requests, loans, notifications&lt;/font&gt;" vertex="1">
+          <mxGeometry height="128" width="256" x="324" y="632" as="geometry" />
+        </mxCell>
+        <mxCell id="worker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#438DD5;strokeColor=#2E6295;fontColor=#ffffff;" value="&lt;b&gt;Digest &amp; Notification Worker&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Container: Node.js, Azure Functions]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Consumes queue: writes in-app notifications, sends weekly digest&lt;/font&gt;" vertex="1">
+          <mxGeometry height="128" width="272" x="632" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="acs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C8C8C;strokeColor=#6B6B6B;fontColor=#ffffff;" value="&lt;b&gt;Azure Communication Services Email&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[External System]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Delivers the weekly digest email&lt;/font&gt;" vertex="1">
+          <mxGeometry height="112" width="288" x="1250" y="648" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" edge="1" parent="1" source="member" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="mobile" value="Lists, searches, borrows books">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="mobile" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="entra" value="Signs in, obtains JWT&lt;br/&gt;[HTTPS/OIDC]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="mobile" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="api" value="Calls REST API — JSON + Bearer JWT&lt;br/&gt;[HTTPS]  (sync)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="mobile" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="blob" value="Uploads / downloads photos&lt;br/&gt;via short-lived SAS  [HTTPS]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="redis" value="GET/SET hot keys — cache-aside&lt;br/&gt;[RESP/TLS]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="sql" value="Reads/writes books, requests, loans&lt;br/&gt;[SQL/TDS 1433]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;dashed=1;strokeColor=#D96C2C;fontColor=#A34E17;" target="sb" value="Publishes BookListed / BorrowRequested&lt;br/&gt;[AMQP]  (async)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="sb" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;dashed=1;strokeColor=#D96C2C;fontColor=#A34E17;" target="worker" value="Delivers messages — peek-lock, retry, DLQ&lt;br/&gt;[AMQP]  (async)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="worker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="sql" value="Writes notifications;&lt;br/&gt;reads books  [SQL/TDS]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="worker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#4A4A4A;fontColor=#333333;" target="acs" value="Sends weekly digest email&lt;br/&gt;[HTTPS]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="0IT28Qr9Dbu_s6IgE3fS" name="Page-2">
+    <mxGraphModel dx="929" dy="598" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="MlphYI5uR5CDSNvgaOE2-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#08427B;strokeColor=#052E56;fontColor=#ffffff;" value="&lt;b&gt;Member&lt;/b&gt;&lt;br/&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br/&gt;&lt;font style=&#39;font-size:9px&#39;&gt;Resident of the apartment block who lists and borrows books&lt;/font&gt;" vertex="1">
+          <mxGeometry height="104" width="240" x="90" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="MlphYI5uR5CDSNvgaOE2-2" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Actor" vertex="1">
+          <mxGeometry height="60" width="30" x="70" y="250" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
