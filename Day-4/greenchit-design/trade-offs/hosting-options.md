@@ -1,6 +1,6 @@
 # Trade-off analysis: hosting options for GreenChit
 
-Supports **ADR-0002**. Scored 2026-08-11.
+Supports **ADR-0002**. 
 
 ## Options
 

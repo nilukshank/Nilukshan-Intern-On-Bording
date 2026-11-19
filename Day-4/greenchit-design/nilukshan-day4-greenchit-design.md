@@ -1,6 +1,6 @@
 # GreenChit — Architecture Design Pack
 
-**Author:** {your-name} · **Date:** 2026-08-11 · **Status:** For design review
+**Author:** Nilukshan · **Date:** 2026-08-06 · **Status:** For design review
 
 ---
 

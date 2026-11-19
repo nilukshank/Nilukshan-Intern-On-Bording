@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net">
   <diagram id="Container_(C4_L2)" name="Container (C4 L2)">
-    <mxGraphModel dx="4887" dy="2497" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+    <mxGraphModel dx="7017" dy="3493" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="bnd" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#444444;verticalAlign=top;fontSize=13;fontStyle=1;" value="GreenChit - Reimbursement Claims System" vertex="1">
-          <mxGeometry height="911" width="1702" x="256" y="192" as="geometry" />
+          <mxGeometry height="911" width="1702" x="259" y="186" as="geometry" />
         </mxCell>
         <mxCell id="claimant" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;fontSize=11;" value="&lt;b&gt;Claimant&lt;/b&gt;&lt;br&gt;&lt;i&gt;[Person]&lt;/i&gt;&lt;br&gt;Submits reimbursement claims" vertex="1">
           <mxGeometry height="100" width="220" x="8" y="-308" as="geometry" />
@@ -99,13 +99,15 @@
             <mxPoint x="1610.07" y="430" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="e8" edge="1" parent="1" source="bnd" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;" value="Validates token signature and app roles&lt;br&gt;&lt;i&gt;[OIDC/HTTPS]&lt;/i&gt;">
+        <mxCell id="e8" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=9;labelBackgroundColor=#FFFFFF;strokeColor=#707070;endArrow=blockThin;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" value="Validates token signature and app roles&lt;br&gt;&lt;i&gt;[OIDC/HTTPS]&lt;/i&gt;">
           <mxGeometry relative="1" x="0.0189" y="-32" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
-              <mxPoint x="2935.77" y="970.77" />
+              <mxPoint x="679.29" y="530" />
+              <mxPoint x="679.29" y="1144.29" />
+              <mxPoint x="2935.71" y="1144.29" />
             </Array>
-            <mxPoint x="1817" y="715.5333333333332" as="sourcePoint" />
+            <mxPoint x="2015.56" y="959.44" as="sourcePoint" />
             <mxPoint x="2935.73" y="329" as="targetPoint" />
           </mxGeometry>
         </mxCell>
@@ -175,6 +177,9 @@
             <mxPoint x="98" y="1179" as="sourcePoint" />
             <mxPoint x="543.4285714285716" y="-458.9999999999998" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="RBRQcN98qcm0s2GGxmA_-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Text" vertex="1">
+          <mxGeometry height="30" width="60" x="3069" y="587" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>

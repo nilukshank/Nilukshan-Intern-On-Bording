@@ -3,14 +3,7 @@
 Design pack for GreenChit, the BISTEC internal reimbursement claims system.
 Intern Onboarding Track, Day 4.
 
-> **Before submitting:** replace `YOUR-NAME` in both deliverable filenames and the
-> `{your-name}` placeholders inside them, and complete both review sections in
-> `YOUR-NAME-day4-trade-offs-and-review.md`.
 
-## Start here
-
-**[`YOUR-NAME-day4-greenchit-design.md`](YOUR-NAME-day4-greenchit-design.md)** — section 4
-gives the reading order for everything else.
 
 ## The design in one paragraph
 
